@@ -6,14 +6,14 @@
         crossorigin="anonymous">
         <script src="index.js"></script>
     </head>
-    <body>
+    <body onload="cargarGastos()">
         <div class="container">
             <h1>Cuanto hay que poner?</h1>
             <div class="container">
                 <div class="row">
                   <div class="col">
                     <div class="container px-1">
-                        <form name="gasto" id="frmGasto" class="row g-3">
+                        <form method="POST" name="frmAmigo">
                             <div class="row row-cols-2">
                             <div class="col-2">
                                 <label>Amigo:</label>
@@ -36,39 +36,10 @@
                                     <button id="Agregar" class="form-control" name="btnAgregar" onclick="agregarGasto()">Agregar</button>
                                 </div>
                             </div>
-                            <div id="gastoImpreso" class="row row-cols-4">
-                                <table class="table">
-                                    <thead>
-                                      <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Item</th>
-                                        <th scope="col">Cant</th>
-                                        <th scope="col">importe</th>
-                                        <th scope="col">total</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <th scope="row">1</th>
-                                        <td>Fernet</td>
-                                        <td>1</td>
-                                        <td>900</td>
-                                        <td>900</td>
-                                      </tr>
-                                      <tr id="filaVacia">
-                                        
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                <div class="col-2">
-                                    <button id="Eliminar" class="form-control" name="btnAgregar" onclick="eliminarGasto()">Eliminar</button>
-                                </div>
-                            </div>
                         </form>
                     </div>
-                    
                   </div>
-                  <div class="col">
+                  <div class="col" id="prueba">
                     segunda tabla
                   </div>
                 </div>

@@ -1,56 +1,120 @@
+const buscarAmigos = ()=>{
+    const listaAmigos=JSON.parse(sessionStorage.getItem("listaAmigos"));
+    if(listaAmigos)
+        return listaAmigos;
+    else
+        return null;
 
-const agregarGasto = () => {
-    let listaGastos;
-    const amigo= new String(document.getElementById("amigo").value);
-    const item = new String(document.getElementById("item").value);
-    const cantidad = new String(document.getElementById("cantidad").value);
-    const importe = new String(document.getElementById("importe").value);
-    const gasto = {
-        amigo:amigo,
-        item:item,
-        cantidad:cantidad,
-        importe:importe,
-    }
-    if(sessionStorage.getItem("listaGastos")){
-        listaGastos=JSON.parse(sessionStorage.getItem("listaGastos"));
+}
+const updateAmigos = ()=>{
+    sessionStorage.setItem("listaAmigos",JSON.stringify(listaAmigos));
+}
+const buscarMensaje = ()=>{
+    return sessionStorage.getItem("mensaje");
+}
+const guardarMensaje=()=>{
+    sessionStorage.setItem("mensaje",mensaje);
+}
+
+let listaAmigos=buscarAmigos();
+let mensaje=buscarMensaje();
+
+const cargarPagina = ()=>{
+    imprimirMensajes();
+    imprimirBtnCalcular();
+    imprimirAmigos();
+}
+
+
+const reiniciar = ()=>{
+    sessionStorage.clear();
+    location.reload();
+}
+
+const imprimirAmigos= ()=>{
+    if(listaAmigos){
+        for(i=0;i<listaAmigos.length;i++){
+            document.getElementById("amigosIngresados").innerHTML+=
+            "<table class='table table-striped table-hover'>"+
+                "<tbody>"+
+                    "<tr>"+
+                        "<td><p class='fs-5'>"+
+                            (i+1)+
+                        "</p></td>"+
+                        "<td>"+
+                            "<p class='fs-5'>"+listaAmigos[i].toUpperCase()+"</p>"+
+                        "</td>"+
+                        "<td style='text-align:end;'>"+
+                            "<button type='button' class='btn btn-danger' onclick='eliminarAmigo("+i+")'>Eliminar</button>"+
+                        "<td>"+
+                    "</tr>"+
+                "</tbody>"+
+            "</table>";
+        }
     }
     else{
-        listaGastos= new Array();
-    }
-    listaGastos.push(gasto);
-    /*
-    listaGastos.forEach(g => {
-        document.getElementById("prueba").innerHTML+= "<h3>"+g.item+"</h3>";
-        console.log("amigo: " + g.amigo + ", item: " + g.item + ", cantidad: " 
-                        + g.cantidad + ", importe: $" + g.importe);
-    });
-    */
-    sessionStorage.setItem("listaGastos",JSON.stringify(listaGastos));
-
-    /*
-    console.log("amigo: " + gasto.amigo + ", item: " + gasto.item +
-    ", cantidad: " + gasto.cantidad + ", importe: $" + gasto.importe + ", session: "+sessionStorage.getItem("gasto"));
-    //alert("amigo: " + gasto.amigo + ", item: " + gasto.item +
-    //", cantidad: " + gasto.cantidad + ", importe: $" + gasto.importe + ", session: "+sessionStorage.getItem("gasto"));
-    /*
-    sessionStorage.setItem('user', JSON.stringify(user));
-    var obj = JSON.parse(sessionStorage.user);
-    */
-}
-
-const cargarGastos =()=>{
-    console.log("cargarGastos");
-    let listaGastos;
-    if(sessionStorage.getItem("listaGastos")){
-        listaGastos=JSON.parse(sessionStorage.getItem("listaGastos"));
-        listaGastos.forEach(g => {
-            document.getElementById("prueba").innerHTML+= "<h3>"+g.item+"</h3>";
-            console.log("amigo: " + g.amigo + ", item: " + g.item + ", cantidad: " 
-                            + g.cantidad + ", importe: $" + g.importe);
-        });
+        document.getElementById("amigosIngresados").innerHTML+=
+        "<div class='col'><p>Ningun Amigo Ingresado</p></div>";
     }
 }
-const eliminarGasto = ()=>{
-    alert("eliminarGasto!");
+const imprimirMensajes =()=>{
+    if(mensaje&&mensaje!=""){
+        document.getElementById("colValidacionIngresoAmigo").innerHTML+=
+        "<div class='alert alert-warning' role='alert'>"+
+        mensaje+
+      "</div>";
+    }
+    console.log(mensaje);
 }
-
+const agregarAmigo= () =>{
+    const amigo = new String((document.getElementById("amigo").value).toLowerCase());
+    mensaje=validarSoloLetras(amigo);
+    mensaje=validarAmigoRepetido(amigo);
+    guardarMensaje();
+    if(mensaje==""){
+        if(!listaAmigos)
+            listaAmigos=new Array(amigo);
+        else
+            listaAmigos.push(amigo); 
+       updateAmigos();
+    }
+    location.reload();
+}
+const eliminarAmigo = (index)=>{
+    listaAmigos.splice(index,1);
+    updateAmigos();
+    location.assign("index.html");
+}
+const imprimirBtnCalcular=()=>{
+    if(listaAmigos&&listaAmigos.length>0){
+        document.getElementById("colCalcular").innerHTML+=
+        "<button type='button' id='btnCalcular' class='btn btn-primary' onclick=\"location.assign('gastos.html');\">Siguiente</button>";
+    }
+}
+const validarSoloLetras=(cadena)=>{
+    if(isCadenaVacia(cadena)){
+        return "Campo requerido";
+    }
+    if(cadena.match(/[^a-zA-Z]/)){
+        return "Solo se admiten caracteres alfabeticos";
+    }
+    return "";
+}
+const isCadenaVacia = (cadena)=>{
+    if(cadena==""){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+const validarAmigoRepetido=(nuevoAmigo)=>{
+    if(listaAmigos&&listaAmigos.length>0){
+        for(i=0;i<listaAmigos.length;i++){
+            if(listaAmigos[i].localeCompare(nuevoAmigo)==0){
+                return "Amigo repetido";
+            }
+        }
+    }
+    return "";
+}
